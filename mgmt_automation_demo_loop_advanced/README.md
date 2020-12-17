@@ -1,7 +1,9 @@
 # Very simple demo to start with Check Point Management automation.
 
 ### 1. Purpose
-These role has a very simple example on how to create an object in an MDS CMA.
+These role has a very simple example on how to create objects, policies and rules in CHKP MGMT.
+Config data are stored in yaml file. 
+Loops are used in playbooks to iterate via config data.
 
 
 Following CheckPoint Ansible modules are used:
@@ -23,7 +25,7 @@ https://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html#che
 ### 3. How to run the role 
 To get started with the automation you might want to test a very simple playbook in:
 ```bash
- playbooks/mgmt_automation_simple_demo/
+mgmt_automation_simple_demo/
 ```
 
 3.1 Adjust inventory to your needs
