@@ -1,0 +1,37 @@
+---
+- name: My demo playbook
+  hosts: MGMT
+  connection: httpapi
+  gather_facts: no
+
+  tasks:
+    - name: Import configuration data into my_data dict
+      include_vars:
+        file: vars/conf_data.yml
+        name: my_data
+
+
+    - name: Print all vars      
+      debug: msg={{ my_data }} 
+
+
+    - name: Print hosts 
+      debug: msg={{ my_data["MGMT_cp_mgmt_host_tasks"] }} 
+
+
+    # Manage host object in Check Point management server
+    - name: Configure hosts
+      cp_mgmt_host:
+        state: "{{item.state}}"
+        color: "{{item.color}}"
+        name: "{{item.name}}"
+        ip_address: "{{item.ip}}"
+        nat_settings:
+          auto_rule: "{{item.nat_auto_rule}}"
+          install_on: "{{item.nat_install_on}}"
+          ipv4_address: "{{item.nat_ipv4}}"
+          method: "{{item.nat_method}}"
+        auto_publish_session: true            
+      loop: "{{ my_data['MGMT_cp_mgmt_host_tasks'] }}"
+      #ignore_errors: yes
+    

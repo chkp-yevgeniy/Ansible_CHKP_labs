@@ -1,0 +1,17 @@
+---
+
+#################################################################
+# Hosts
+MGMT_cp_mgmt_host_tasks:
+- { state: present, name: test_host_automation, ip: 123.123.1.1, color: red, 
+    nat_auto_rule: false, nat_method: static, nat_ipv4: , nat_install_on: All,
+    comments: "Test host created from Ansible via WEB API"
+  }
+- { state: present, name: test_host_automation2, ip: 123.123.1.2, color: red, 
+    nat_auto_rule: false, nat_method: static, nat_ipv4: , nat_install_on: All,
+    comments: "Test host created from Ansible via WEB API"
+  } 
+- { state: present, name: test_host_automation3, ip: 123.123.1.3, color: red, 
+    nat_auto_rule: false, nat_method: static, nat_ipv4: , nat_install_on: All,
+    comments: "Test host created from Ansible via WEB API"
+  } 

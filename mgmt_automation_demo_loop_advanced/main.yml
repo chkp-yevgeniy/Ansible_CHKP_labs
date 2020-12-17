@@ -1,0 +1,31 @@
+---
+- name: My demo playbook
+  hosts: MGMT
+  connection: httpapi
+  gather_facts: no
+
+  tasks:
+    - name: Import configuration data into my_data dict
+      include_vars:
+        file: vars/conf_data.yml
+        name: my_data
+
+
+    - name: Print all vars      
+      debug: msg={{ my_data }} 
+
+
+    - name: Print hosts 
+      debug: msg={{ my_data["MGMT_cp_mgmt_host_tasks"] }} 
+  
+  
+    #- include_tasks: included_tasks/cp_mgmt_host.yml
+    #- include_tasks: included_tasks/cp_mgmt_network.yml
+    ##- include_tasks: included_tasks/cp_mgmt_group.yml
+    #- include_tasks: included_tasks/cp_mgmt_service_udp.yml
+    - include_tasks: included_tasks/cp_mgmt_package.yml
+    - include_tasks: included_tasks/cp_mgmt_access_rule.yml
+    # # Do not forget to publish.
+    - include_tasks: included_tasks/cp_mgmt_publish.yml
+
+

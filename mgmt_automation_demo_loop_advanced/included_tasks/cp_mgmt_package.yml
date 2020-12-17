@@ -1,0 +1,13 @@
+---
+# Add or delete security policy package from Check Point management server
+ - name: Configure policy package
+   cp_mgmt_package:
+     state: "{{item.state}}"
+     access: "{{item.access}}"
+     color: "{{item.color}}"
+     comments: "{{item.comments}}"
+     name: "{{item.name}}"
+     threat_prevention: "{{item.threat_prevention}}"
+   #loop: "{{ vars[ansible_checkpoint_domain~'-cp_mgmt_package_tasks'] }}"
+   loop: "{{ my_data['MGMT_cp_mgmt_package_tasks'] }}"
+   ignore_errors: yes

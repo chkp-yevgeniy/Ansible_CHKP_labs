@@ -1,0 +1,15 @@
+---
+# Add or delete network object in Check Point management server
+- name: Configure networks
+  cp_mgmt_network:
+    state: "{{item.state}}"
+    color: "{{item.color}}"
+    # groups: "{{item.groups}}" use member in the group module instead 
+    name: "{{item.name}}"
+    subnet: "{{ item.subnet | ipaddr('network') }}"
+    subnet_mask: "{{ item.subnet | ipaddr('netmask') }}"
+    comments: "{{item.comments}}"
+    #auto_publish_session: true      
+  #loop: "{{ vars[ansible_checkpoint_domain~'-cp_mgmt_network_tasks'] }}"
+  loop: "{{ my_data['MGMT_cp_mgmt_network_tasks'] }}"
+  ignore_errors: yes

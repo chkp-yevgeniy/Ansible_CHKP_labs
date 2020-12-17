@@ -1,0 +1,12 @@
+---
+# Publish changes from private sesion to database in Check Point management server
+- name: publish
+  cp_mgmt_publish:
+  register: publish_response
+
+# - debug:
+#   var: publish_response
+
+- name: "Print publish_response"
+  debug: msg={{ publish_response }}
+  

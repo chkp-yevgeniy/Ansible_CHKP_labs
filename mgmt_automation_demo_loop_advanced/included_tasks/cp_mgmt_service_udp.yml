@@ -1,0 +1,14 @@
+---
+- name: Configure service udp
+  cp_mgmt_service_udp:
+    state: "{{item.state}}"      
+    accept_replies: "{{item.acceptReplies}}"
+    aggressive_aging:        
+      default_timeout: "{{item.defaultTimeout}}"
+    color: "{{item.color}}"
+    name: "{{item.name}}"
+    port: "{{item.port}}"     
+    comments: "{{item.comments}}"
+  #loop: "{{ vars[ansible_checkpoint_domain~'-cp_mgmt_service_udp'] }}"
+  loop: "{{ my_data['MGMT_cp_mgmt_service_udp'] }}"
+  ignore_errors: yes  

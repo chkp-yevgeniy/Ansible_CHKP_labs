@@ -1,0 +1,95 @@
+---
+
+#################################################################
+#################################################################
+#################################################################
+### Configuration for the CMA/Domain: MGMT
+
+# Network groups
+MGMT_cp_mgmt_group_tasks:
+- { state: present, name: TestGroupAutomation, comments: "Test group created from Ansible via WEB API", members: ["net_10.123.123.0_m24", "net_10.123.124.0_m24", "net_10.123.125.0_m24"]}
+#- { state: present, name: TestGroupAutomation, comments: "Test group created from Ansible via WEB API", members: ["net_10.123.123.0_m24"]}
+
+
+# Networks
+MGMT_cp_mgmt_network_tasks:
+- { state: present, name: 'net_10.123.123.0_m24', subnet: 10.123.123.0/24, color: blue, comments: "Test network created from Ansible via WEB API"}
+- { state: present, name: 'net_10.123.124.0_m24', subnet: 10.123.124.0/24, color: blue, comments: "Test network created from Ansible via WEB API"}
+- { state: present, name: 'net_10.123.125.0_m24', subnet: 10.123.125.0/24, color: blue, comments: "Test network created from Ansible via WEB API"}
+#- { state: present, name: 'net_10.123.123.0_m24', subnet: 10.123.123.0/24, groups: ["TestGroupAutomation"], color: blue}
+#- { state: present, name: 'net_10.123.124.0_m24', subnet: 10.123.124.0/24, groups: ["TestGroupAutomation"], color: blue}
+#- { state: present, name: 'External', subnet: 10.2.0.0/24, groups: ["ACME_ext_nets"], color: blue}
+#- { state: present, name: 'Internal', subnet: 10.2.1.0/24, groups: ["ACME_nets"], color: blue}
+# - { state: present, name: 'WebServers', subnet: 10.2.10.0/24, groups: ["ACME_nets"], color: cyan}
+# - { state: present, name: 'DBServers', subnet: 10.2.11.0/24, groups: ["ACME_nets"], color: cyan}
+# - { state: present, name: 'LoadBalancer1', subnet: 10.2.5.0/24, groups: ["ACME_nets"], color: orange}
+# - { state: present, name: 'LoadBalancer2', subnet: 10.2.6.0/24, groups: ["ACME_nets"], color: orange}
+
+
+# Hosts
+MGMT_cp_mgmt_host_tasks:
+- { state: present, name: test_host_automation, ip: 123.123.1.1, color: red, 
+    nat_auto_rule: false, nat_method: static, nat_ipv4: , nat_install_on: All,
+    comments: "Test host created from Ansible via WEB API"
+  }
+- { state: present, name: test_host_automation2, ip: 123.123.1.2, color: red, 
+    nat_auto_rule: false, nat_method: static, nat_ipv4: , nat_install_on: All,
+    comments: "Test host created from Ansible via WEB API"
+  } 
+
+
+# UDP services
+MGMT_cp_mgmt_service_udp:
+- { state: present, name: 'udp_11111', port: 11111, acceptReplies: true, defaultTimeout: 3600, color: orange, comments: "Test service created from Ansible via WEB API"}
+- { state: present, name: 'udp_10123', port: 10123, acceptReplies: true, defaultTimeout: 3600, color: orange, comments: "Test service created from Ansible via WEB API"}
+- { state: present, name: 'udp_10124', port: 10124, acceptReplies: true, defaultTimeout: 3600, color: orange, comments: "Test service created from Ansible via WEB API"}
+
+# List of access-sections to add to rulebase (not supported with official ansible module)
+#mgmt_api_add_access_section:
+#- { state: present, name: default drop, layer: Orchestration_Demo_Policy Network, position: top}
+#- { state: present, name: ACMECorp Rules, layer: Orchestration_Demo_Policy Network, position: top}
+
+# Policy packages
+MGMT_cp_mgmt_package_tasks:
+- { state: present, 
+    name: Automation_Test_Policy_2, 
+    comments: "Demo policy created from Ansible via WEB API", 
+    color: forest green, 
+    threat_prevention: true, 
+    access: true 
+  }
+
+# # Rules
+MGMT_cp_mgmt_access_rule_tasks:
+- { state: present, layer: Automation_Test_Policy_2 Network, name: First rule, position: 1, source: ["test_host_automation", "test_host_automation2"], destination: any, service: ["ssh", "https"], action: accept, track_type: log }
+- { state: present,  layer: Automation_Test_Policy_2 Network, name: Second rule, position: 2, source: ["test_host_automation"], destination: any, service: ["udp_10123"], action: accept, track_type: log }
+- { state: present, layer: Automation_Test_Policy_2 Network, name: Third rule, position: 3, source: any, destination: ["net_10.123.123.0_m24", "net_10.123.124.0_m24"], service: ["udp_10124"], action: accept, track_type: log }  
+- { state: present, layer: Automation_Test_Policy_2 Network, name: Fourth rule, position: 5, source: ["net_10.123.123.0_m24"], destination: ["any"], service: ["any"], action: drop, track_type: log }
+- { state: present, layer: Automation_Test_Policy_2 Network, name: Rule 5, position: 4, source: any, destination: ["any"], service: ["any"], action: drop, track_type: log }
+
+# - { state: present, layer: Automation_Test_Policy_2 Network, name: ACMECorp WebServer to DB, 
+#     position: 4, source: WebServers, destination: DBServers, service: ["MySQL"], action: accept, track_type: log 
+#   }
+# - { state: present, layer: Automation_Test_Policy_2 Network, name: ACMECorp WebServer Outbound Access, 
+#     position: 5, source: WebServers, destination: any, service: ["http", "https", "ntp", "dns"], action: accept, track_type: log 
+#   }
+# - { state: present, layer: Automation_Test_Policy_2 Network,  name: Allow ICMP and HTTPS,
+#     position: 6, source: any, destination: any, service: ["icmp-requests", "https"], action: accept, track_type: log 
+#   }
+# - { state: present, layer: Automation_Test_Policy_2 Network,  name: LoadBalancers,
+#     position: 7,  source: any, destination: ["LoadBalancer1", "LoadBalancer2", "hst-dmz-webserver"], service: ["http", "https"], action: accept, track_type: log 
+#   }
+  # Enable log on the existing cleanup rule
+# - { state: present, layer: Automation_Test_Policy_2 Network, name: Cleanup rule, 
+#     position: 4, position_bottom: "default drop", source: any, destination: ["any"], service: ["any"], action: drop, track_type: log }
+
+
+# # Gateways
+# MGMT_cp_mgmt_simple_gateway_tasks:
+# - { state: present, name: sg101, sickey: vpn123, gw_version: R80.20, 
+#     anti_bot: true, anti_virus: true, appi_ctrl: true, color: blue, firewall: true, ips: true, threat_emulation: false, url_filtering: true, 
+#     eth0_ipv4: 192.168.233.101, eth0_ipv4_network_mask: 255.255.255.0, eth0_anti_spoofing: true, eth0_topology: External, 
+#     eth1_ipv4: 10.101.1.1,      eth1_ipv4_network_mask: 255.255.255.0, eth1_anti_spoofing: true, eth1_topology: Internal, 
+#     eth1_topology_ip_behind_if: network defined by the interface ip and net mask 
+#   }
+
