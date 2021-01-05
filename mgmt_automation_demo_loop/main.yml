@@ -10,14 +10,11 @@
         file: vars/conf_data.yml
         name: my_data
 
+    - name: Print all vars
+      debug: msg={{ my_data }}
 
-    - name: Print all vars      
-      debug: msg={{ my_data }} 
-
-
-    - name: Print hosts 
-      debug: msg={{ my_data["MGMT_cp_mgmt_host_tasks"] }} 
-
+    - name: Print hosts
+      debug: msg={{ my_data["MGMT_cp_mgmt_host_tasks"] }}
 
     # Manage host object in Check Point management server
     - name: Configure hosts
@@ -31,7 +28,6 @@
           install_on: "{{item.nat_install_on}}"
           ipv4_address: "{{item.nat_ipv4}}"
           method: "{{item.nat_method}}"
-        auto_publish_session: true            
+        auto_publish_session: true
       loop: "{{ my_data['MGMT_cp_mgmt_host_tasks'] }}"
       #ignore_errors: yes
-    

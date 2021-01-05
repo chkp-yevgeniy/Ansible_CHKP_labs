@@ -1,10 +1,10 @@
 [MGMT]
 
-10.142.0.20
+#10.142.0.20
 # If you have an MDS configure inventory in following way
 # Inventory and Playbook are prepared for an MDS
 # These are your CMAs (Domains)
-#CMA1CMA ansible_checkpoint_domain=CMA1
+CMA1CMA ansible_checkpoint_domain=CMA1
 #CMA2CMA ansible_checkpoint_domain=CMA2
 
 # !!! Note:
@@ -24,8 +24,8 @@
 ansible_httpapi_use_ssl=True
 ansible_httpapi_validate_certs=False
 # Your smart console account:
-ansible_user=api_user
-ansible_ssh_pass=vpn123
+ansible_user=admin2
+ansible_ssh_pass=qwe123
 #ansible_password=
 # Check Point modules:
 #ansible_network_os=checkpoint

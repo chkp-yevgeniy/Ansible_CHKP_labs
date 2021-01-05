@@ -1,7 +1,7 @@
 # Very simple demo to start with Check Point Management automation.
 
 ### 1. Purpose
-These role has a very simple example on how to create an object in an MDS CMA.
+This role ia a very simple example on how to create an object in an MDS CMA.
 
 
 Following CheckPoint Ansible modules are used:

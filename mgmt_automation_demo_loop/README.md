@@ -1,34 +1,24 @@
-# Very simple demo to start with Check Point Management automation.
+# Check Point Management (CHKP MGMT) automation with loop and data from an external file.
 
 ### 1. Purpose
-These role has a very simple example on how to create objects, policies and rules in CHKP MGMT.
-Config data are stored in yaml file. 
+This role is a simple example on how to create hosts in CHKP MGMT.
+Config data are stored in vars/. 
 Loops are used in playbooks to iterate via config data.
-
 
 Following CheckPoint Ansible modules are used:
 https://galaxy.ansible.com/check_point/mgmt
-
 The modules (and therefore this role) are idempotent which is great! 
-
-Modules are documented in: 
-https://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html#check-point
 
 
 ### 2. Requirements
-- Ansible 2.9 (latest)
-- Python 2.7 (latest)
-- Install modules:
-- https://galaxy.ansible.com/check_point/mgmt
+- Ansible => 2.9
+- Python => 2.7
 
 
 ### 3. How to run the role 
-To get started with the automation you might want to test a very simple playbook in:
-```bash
- mgmt_automation_simple_demo/
-```
 
-3.1 Adjust inventory to your needs
+
+3.1 Adjust inventory according to your environment:  
 ```bash
  inventory.yml
 ```
@@ -42,3 +32,12 @@ To get started with the automation you might want to test a very simple playbook
 Make sure:
 - Management server is reachable via 443
 - API is running and allowed for automation server IP
+
+
+
+### 4. References
+Ansible CHKP Modules command reference:   
+https://docs.ansible.com/ansible/latest/modules/list_of_network_modules.html#check-point
+
+Ansible CHKP Modules galaxy documentation:     
+https://galaxy.ansible.com/check_point/mgmt
