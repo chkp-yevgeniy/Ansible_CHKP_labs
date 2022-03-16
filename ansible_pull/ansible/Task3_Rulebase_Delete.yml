@@ -1,0 +1,59 @@
+- hosts: "203.0.113.60"
+  vars_files:
+    - vars.yml
+  connection: httpapi
+
+  tasks:
+
+    - set_fact:
+        eth1_ip: '{{ eth1_ipv4 + "/" + eth1_mask }}'
+
+    - set_fact:
+        eth1_network: "{{ eth1_ip | ipaddr('network') }}"
+
+    - name: Delete Policy Package
+      cp_mgmt_package:
+        access: true
+        threat_prevention: true
+        color: pink
+        name: Demo_Package
+        state: absent 
+
+    - name:  Delete web server for sales
+      cp_mgmt_host:
+        name: "Sales Web Server"
+        ip_address: 10.4.0.131
+        color: blue
+        state: absent 
+
+    - name:  Delete database for development
+      cp_mgmt_host:
+        name: "Dev Database Server"
+        ip_address: 10.1.0.132
+        color: orange
+        state: absent 
+
+    - name: Delete Security Zone
+      cp_mgmt_security_zone:
+        color: blue
+        name: InsideZone
+        state: absent 
+
+    - name:  Delete Internal Network
+      cp_mgmt_network:
+        name: "Internal_Network"
+        subnet: "{{ eth1_network }}"
+        mask_length: "{{ eth1_mask }}"
+        state: absent 
+
+    - name:  Delete Jump Network
+      cp_mgmt_network:
+        name: "Jump_Network"
+        subnet: "10.142.0.0"
+        mask_length: "16"
+        color: orange
+        state: absent
+
+    - name: Publish Handeler
+      cp_mgmt_publish:
+

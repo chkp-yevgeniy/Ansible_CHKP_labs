@@ -1,0 +1,9 @@
+---
+mgmt_user: api_user
+mgmt_password: vpn123
+mgmt_server: 203.0.113.60 
+mgmt_fingerprint: 93:94:33:78:92:CD:25:0A:AB:B6:E5:4A:83:16:C9:BF:1C:FF:09:E5
+eth1_ipv4: 192.168.1.10
+eth1_mask: "24"
+cpx_gw_name: r80dot30gw1
+policy_name: Demo_Package
