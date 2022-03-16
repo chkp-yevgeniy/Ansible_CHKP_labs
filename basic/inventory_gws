@@ -1,0 +1,8 @@
+[mgmt]
+203.0.113.81
+[mgmt:vars]
+ansible_httpapi_use_ssl=True
+ansible_httpapi_validate_certs=False
+ansible_user=admin
+ansible_password=vpn123
+ansible_network_os=check_point.mgmt.checkpoint

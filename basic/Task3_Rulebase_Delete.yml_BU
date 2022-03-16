@@ -1,4 +1,4 @@
-- hosts: "203.0.113.60"
+- hosts: mgmt
   vars_files:
     - vars.yml
   connection: httpapi

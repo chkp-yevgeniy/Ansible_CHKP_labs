@@ -1,0 +1,82 @@
+---
+- hosts: localhost
+  vars_files:
+    - vars.yml
+  tasks:
+    - name: Login
+      uri:
+         url: "https://{{ mgmt_server }}/web_api/login"
+         validate_certs: false
+         method: POST
+         body: 
+           user: "{{ mgmt_user }}"
+           password: "{{ mgmt_password }}"       
+         body_format: json   
+      register: loginoutput
+
+    - set_fact:
+         sid: "{{ loginoutput.json.sid }}"
+
+    - name: Set Gateway  
+      uri:
+         url: "https://{{ mgmt_server }}/web_api/set-simple-gateway"
+         validate_certs: false
+         method: POST
+         body:
+           name: "Internal-GW"
+           firewall: true
+           ips: true
+           firewall-settings:
+              maximum-limit-for-concurrent-connections: 10000
+           application-control: true
+           url-filtering: true
+           anti-bot: true
+           vpn: false
+           color: blue
+           tags:
+             - Web_Control
+         body_format: json
+         headers :
+           X-chkp-sid : "{{ sid }}"
+
+    - name: Publish
+      uri:
+         url: "https://{{ mgmt_server }}/web_api/publish"
+         validate_certs: false
+         method: POST
+         body_format: json
+         body: "{}"
+         headers :
+           X-chkp-sid : "{{ sid }}"
+      register: taskid
+
+    - set_fact:
+         task: "{{ taskid.json['task-id'] }}"
+
+    - name: Check Task Progress Status
+      uri:
+         url: "https://{{ mgmt_server }}/web_api/show-task"
+         validate_certs: false
+         method: POST
+         body_format: json
+         body: 
+           task-id: "{{ task }}"    
+         headers:
+           X-chkp-sid : "{{ sid }}"
+      retries: 20
+      delay: 3
+      register: taskoutput
+      until: (taskoutput.json.tasks[0]['progress-percentage'] == 100)
+      failed_when:
+        - (taskoutput.json.tasks[0]['progress-percentage'] == 100)
+        - (taskoutput.json.tasks[0]['status'] != "succeeded")
+
+    - name: Logout
+      uri:
+         url: "https://{{ mgmt_server }}/web_api/logout"
+         validate_certs: false
+         method: POST
+         body_format: json
+         body: "{}"
+         headers :
+           X-chkp-sid : "{{ sid }}"

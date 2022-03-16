@@ -1,0 +1,181 @@
+- hosts: mgmt
+  vars_files:
+    - vars.yml
+  connection: httpapi
+
+  tasks:
+
+    - name:  Create web server for sales
+      check_point.mgmt.cp_mgmt_host:
+        name: "Sales Web Server"
+        ip_address: 10.4.0.131
+        color: red 
+      notify: Publish Handeler
+
+    - name:  Create database for development
+      check_point.mgmt.cp_mgmt_host:
+        name: "Dev Database Server"
+        ip_address: 10.1.0.132
+        color: orange
+        tags: 
+          - Database_Server
+      notify: Publish Handeler
+
+    - name: add-security-zone
+      check_point.mgmt.cp_mgmt_security_zone:
+        color: blue
+        name: InsideZone
+        state: present
+      notify: Publish Handeler
+
+    - set_fact:
+        eth1_ip: '{{ eth1_ipv4 + "/" + eth1_mask }}'
+
+    - set_fact:
+        eth1_network: "{{ eth1_ip | ipaddr('network') }}"
+
+    - name:  Create Internal Network
+      check_point.mgmt.cp_mgmt_network:
+        name: "Internal_Network"
+        subnet: "{{ eth1_network }}"
+        mask_length: "{{ eth1_mask }}"
+        state: present
+        color: "red"
+        nat_settings:
+           auto_rule: true
+           hide_behind: "gateway"
+           method: "hide"
+      notify: Publish Handeler
+
+    - name:  Create Jump Network
+      check_point.mgmt.cp_mgmt_network:
+        name: "Jump_Network"
+        subnet: "10.142.0.0"
+        mask_length: "16"
+        state: present
+        color: orange
+      notify: Publish Handeler
+
+    - name: Create Policy Package
+      check_point.mgmt.cp_mgmt_package:
+        access: true
+        threat_prevention: true
+        color: pink
+        name: Demo_Package
+        state: present
+      notify: Publish Handeler
+
+    - name: "Set Threat Rule 1"
+      check_point.mgmt.cp_mgmt_threat_rule:
+        layer: "Demo_Package Threat Prevention"
+        name: "Threat Rule 1"
+        protected_scope:
+          - "Sales Web Server"
+          - "Dev Database Server"
+        position: "1"
+        action: "Strict"
+      notify: Publish Handeler
+
+    - name: Set Access Layer for URLF and APPC
+      check_point.mgmt.cp_mgmt_access_layer:
+        applications_and_url_filtering: true
+        firewall: true
+        name: "Demo_Package Network"
+        state: present
+      notify: Publish Handeler
+
+    - name: Set Logging on the Cleanup rule
+      check_point.mgmt.cp_mgmt_access_rule:
+        layer: "Demo_Package Network"
+        name: "Cleanup rule"
+        track:
+          type: "Log"
+        state: present
+      notify: Publish Handeler
+
+    - name: Create rule - DHCP Rule
+      check_point.mgmt.cp_mgmt_access_rule:
+        layer: "Demo_Package Network"
+        name: "DHCP Rules"
+        position: "1"
+        source:
+          - "Internal_Network"
+        service:
+          - dhcp
+          - dhcp-relay
+        track:
+          type: "Extended Log"
+        action: Accept
+      notify: Publish Handeler
+
+    - name: Create rule - Demo Rule
+      check_point.mgmt.cp_mgmt_access_rule:
+        layer: "Demo_Package Network"
+        name: "Demo WebServer Rule"
+        position: "2"
+        source:
+          - "Sales Web Server"
+        destination:
+          - "Dev Database Server"
+        service:
+          - https
+          - http
+          - ftp
+        track:
+          type: "Extended Log"
+        action: Accept
+        source_negate: no
+      notify: Publish Handeler
+
+    - name: Create rule - SSH
+      check_point.mgmt.cp_mgmt_access_rule:
+        layer: "Demo_Package Network"
+        name: "Gaia API and SSH Access"
+        position: "3"
+        source: "Jump_Network"
+        service:
+          - ssh
+          - icmp-requests
+          - https
+          - http
+        track:
+          type: "Extended Log"
+        action: Accept
+      notify: Publish Handeler
+
+
+    - name: Internal to Internet
+      check_point.mgmt.cp_mgmt_access_rule:
+        layer: "Demo_Package Network"
+        name: "Internal to Internet"
+        position: "4"
+        source: "Internal_Network"
+        track:
+          type: "Extended Log"
+        action: Accept
+      notify: Publish Handeler
+
+  handlers:
+  - name: Publish Handeler
+    check_point.mgmt.cp_mgmt_publish:
+    notify: Install Access Policy
+
+  - name: Install Access Policy
+    check_point.mgmt.cp_mgmt_install_policy:
+      access: true
+      threat_prevention: false
+      policy_package: "{{ policy_name }}"
+      targets:
+       - "{{ cpx_gw_name }}"
+    notify: Install Threat Policy
+    when: No_Policy_Install is not defined
+
+  - name: Install Threat Policy
+    check_point.mgmt.cp_mgmt_install_policy:
+      access: false
+      threat_prevention: true
+      policy_package: "{{ policy_name }}"
+      targets:
+        - "{{ cpx_gw_name }}"
+    when: No_Policy_Install is not defined
+

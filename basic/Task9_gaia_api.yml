@@ -1,0 +1,9 @@
+- hosts: 203.0.113.80
+  connection: httpapi
+
+  tasks:
+    - name: Update Physical Interface eth1  
+      check_point.gaia.cp_gaia_physical_interface:
+        name: "eth0"
+        comments: "Ansible Update eth1 comments"
+

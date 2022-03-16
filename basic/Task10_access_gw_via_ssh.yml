@@ -1,0 +1,33 @@
+---
+- hosts: mgmt
+  gather_facts: no
+  vars_files:
+    - vars.yml
+  
+  tasks:
+    
+    - name: Get ip address
+      shell: hostname
+      register: hostname
+
+    - name: Print hostname
+      debug: msg="{{hostname.stdout}}"
+
+    
+    - name: Get cplic
+      shell: cplic print
+      register: cp_lic
+
+    - name: Print cplic
+      debug: msg="{{cp_lic.stdout}}"
+
+
+    - name: Get ip address
+      shell: ifconfig | grep eth0 -A 3 | grep inet | awk '{print $2}'
+      register: ip_address
+
+    - name: Print ip address
+      debug: msg="{{ip_address.stdout}}"
+
+    
+   

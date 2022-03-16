@@ -1,0 +1,12 @@
+- hosts: mgmt
+  connection: httpapi
+
+  tasks:
+
+    - name:  "Working on host {{ host }} with ip {{ ip }} and state {{ state }}" 
+      cp_mgmt_host:
+        name: "{{ host }}"
+        ip_address: "{{ ip }}"
+        state: "{{ state }}" 
+        auto_publish_session: true
+

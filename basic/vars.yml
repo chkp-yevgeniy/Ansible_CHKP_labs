@@ -1,0 +1,10 @@
+---
+mgmt_user: admin
+mgmt_password: vpn123
+mgmt_server: 203.0.113.80
+eth1_ipv4: 10.1.1.100
+eth1_mask: "24"
+cpx_gw_name: Internal-GW
+policy_name: Standard
+cpx_gw_ip: 203.0.113.81
+...
