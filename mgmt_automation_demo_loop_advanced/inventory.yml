@@ -1,6 +1,6 @@
 [MGMT]
 
-10.142.0.20
+203.0.113.80
 # If you have an MDS configure inventory in following way
 # Inventory and Playbook are prepared for an MDS
 # These are your CMAs (Domains)

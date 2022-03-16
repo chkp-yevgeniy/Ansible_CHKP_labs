@@ -13,6 +13,8 @@
     - name: Print all vars
       debug: msg={{ my_data }}
 
+    #- meta: end_play  
+
     - name: Print hosts
       debug: msg={{ my_data["MGMT_cp_mgmt_host_tasks"] }}
 

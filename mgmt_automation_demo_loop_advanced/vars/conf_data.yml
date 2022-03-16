@@ -108,14 +108,13 @@ MGMT_cp_mgmt_service_udp:
 
 # Policy packages
 MGMT_cp_mgmt_package_tasks:
-  - {
-      state: present,
-      name: Automation_Test_Policy_2,
-      comments: "Demo policy created from Ansible via WEB API",
-      color: forest green,
-      threat_prevention: true,
-      access: true,
-    }
+  - state: present
+    name: Automation_Test_Policy_2
+    comments: "Demo policy created from Ansible via WEB API"
+    color: forest green
+    threat_prevention: true
+    access: true
+    
 
 # # Rules
 MGMT_cp_mgmt_access_rule_tasks:
@@ -125,7 +124,7 @@ MGMT_cp_mgmt_access_rule_tasks:
       name: First rule,
       position: 1,
       source: ["test_host_automation", "test_host_automation2"],
-      destination: any,
+      destination: "Any",
       service: ["ssh", "https"],
       action: accept,
       track_type: log,
@@ -136,7 +135,7 @@ MGMT_cp_mgmt_access_rule_tasks:
       name: Second rule,
       position: 2,
       source: ["test_host_automation"],
-      destination: any,
+      destination: Any,
       service: ["udp_10123"],
       action: accept,
       track_type: log,
@@ -146,7 +145,7 @@ MGMT_cp_mgmt_access_rule_tasks:
       layer: Automation_Test_Policy_2 Network,
       name: Third rule,
       position: 3,
-      source: any,
+      source: Any,
       destination: ["net_10.123.123.0_m24", "net_10.123.124.0_m24"],
       service: ["udp_10124"],
       action: accept,
@@ -158,8 +157,8 @@ MGMT_cp_mgmt_access_rule_tasks:
       name: Fourth rule,
       position: 5,
       source: ["net_10.123.123.0_m24"],
-      destination: ["any"],
-      service: ["any"],
+      destination: Any,
+      service: Any,
       action: drop,
       track_type: log,
     }
@@ -168,9 +167,9 @@ MGMT_cp_mgmt_access_rule_tasks:
       layer: Automation_Test_Policy_2 Network,
       name: Rule 5,
       position: 4,
-      source: any,
-      destination: ["any"],
-      service: ["any"],
+      source: Any,
+      destination: Any,
+      service: Any,
       action: drop,
       track_type: log,
     }

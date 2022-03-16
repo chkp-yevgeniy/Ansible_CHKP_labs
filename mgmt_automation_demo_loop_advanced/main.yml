@@ -20,12 +20,11 @@
   
   
     - include_tasks: included_tasks/cp_mgmt_host.yml
-    - include_tasks: included_tasks/cp_mgmt_network.yml
-    #- include_tasks: included_tasks/cp_mgmt_group.yml
+    - include_tasks: included_tasks/cp_mgmt_network.yml    
     - include_tasks: included_tasks/cp_mgmt_service_udp.yml
     - include_tasks: included_tasks/cp_mgmt_package.yml
     - include_tasks: included_tasks/cp_mgmt_access_rule.yml
-    # # Do not forget to publish.
+    # Do not forget to publish.
     - include_tasks: included_tasks/cp_mgmt_publish.yml
 
 
