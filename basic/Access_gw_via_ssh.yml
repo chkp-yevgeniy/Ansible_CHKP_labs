@@ -29,5 +29,6 @@
     - name: Print ip address
       debug: msg="{{ip_address.stdout}}"
 
-    
+
+  
    

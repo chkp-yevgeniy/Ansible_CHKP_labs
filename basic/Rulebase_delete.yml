@@ -54,6 +54,6 @@
         color: orange
         state: absent
 
-    - name: Publish Handeler
+    - name: Publish
       cp_mgmt_publish:
 

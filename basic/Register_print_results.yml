@@ -1,0 +1,24 @@
+- hosts: mgmt
+  connection: httpapi
+
+  tasks:
+
+    - name:  Create web server for sales
+      cp_mgmt_host:
+        name: "Sales Web Server 2"
+        ip_address: 10.4.0.137
+        color: blue
+        state: present
+        auto_publish_session: true
+      register: create_host_res
+
+    - name: Get host object facts
+      checkpoint_host_facts:
+        name: Sales Web Server 2
+      register: show_host_res
+
+    - name: Print create_host_res
+      debug: msg={{ create_host_res }}
+
+    - name: Print show_host_res
+      debug: msg={{ show_host_res }}
